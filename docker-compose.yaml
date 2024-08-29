@@ -1,18 +1,26 @@
 version: '3.8'
 
 services:
-  node_exporter:
+  netflow_exporter:
     image: hatamiarash7/netflow-exporter:v1.0.0
     pid: host
     restart: unless-stopped
     ports:
       - "2055:2055/udp"
       - "9438:9438"
+  snmp_exporter:
+    image: prom/snmp-exporter:latest
+    pid: host
+    restart: unless-stopped
+    ports:
+      - "9116:9116"
+    volumes:
+      - ./snmp.yml:/etc/prometheus/prometheus.yml
   prometheus:
     image: prom/prometheus
     restart: always
     ports:
-      - "9090:9090"
+      - "9091:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     extra_hosts:
